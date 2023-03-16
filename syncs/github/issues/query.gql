@@ -1,0 +1,57 @@
+query($owner: String!, $repo: String!, $endCursor: String) {
+  repository(owner: $owner, name: $repo) {
+    name
+    issues(first:10, after: $endCursor) {
+      nodes {
+        author {
+          login
+        }
+        body
+        closed
+        closedAt
+        comments {
+          totalCount
+        }
+        createdAt
+        createdViaEmail
+        databaseId
+        editor {
+          login
+        }
+        includesCreatedEdit
+        isReadByViewer
+        labels(first: 15) {
+          totalCount
+          nodes {
+            name
+          }
+        }
+        lastEditedAt
+        locked
+        milestone {
+          number
+        }
+        number
+        participants {
+          totalCount
+        }
+        publishedAt
+        reactions {
+          totalCount
+        }
+        publishedAt
+        reactions {
+          totalCount
+        }
+        state
+        title
+        updatedAt
+        url
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
