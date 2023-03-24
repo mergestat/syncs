@@ -7,4 +7,4 @@ This repository provides officially supported syncers for [**`mergestat`**](http
 
 ## License
 
-MIT License Copyright (c) 2023 Askgit, Inc. Refer to [`LICENSE`](./LICENSE) for full text.
+MIT License Copyright (c) 2023 AskGit, Inc. Refer to [`LICENSE`](./LICENSE) for full text.
