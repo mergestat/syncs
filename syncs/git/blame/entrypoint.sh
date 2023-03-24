@@ -11,10 +11,13 @@
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
+# apply postgresql schema for the syncer
+psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
+
 # using git ls-tree and jq find all blobs to iterate over
 git ls-tree --format='{"type": "%(objecttype)", "path": "%(path)"}' -r HEAD | jq -r 'select(.type == "blob") | .path' > blobs.txt;
 
-(while read -r path; do python /blame.py $path; done < blobs.txt) \
+(while read -r path; do python /syncer/blame.py $path; done < blobs.txt) \
   | jq -rc '[env.MERGESTAT_REPO_ID, .email, .name, .time, .hash, .line_number, .line, .path] | @csv' \
   | psql $MERGESTAT_POSTGRES_URL -1 \
       -c "DELETE FROM public.git_blame WHERE repo_id = '$MERGESTAT_REPO_ID'" \
