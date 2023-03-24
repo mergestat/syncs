@@ -1,5 +1,5 @@
 name: Publish Docker Images
-
+# NOTE: some inspiration from here: https://code.dblock.org/2021/09/03/generating-task-matrix-by-looping-over-repo-files-with-github-actions.html
 on:
   push:
     branches:
