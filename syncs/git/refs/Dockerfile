@@ -9,6 +9,8 @@ FROM debian:buster-slim
 RUN apt-get update && apt-get install -y git postgresql-client jq
 
 COPY --from=builder /go/mergestat-lite/.build/mergestat /usr/local/bin/mergestat
-COPY entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+RUN mkdir -p /syncer
+COPY schema.sql entrypoint.sh /syncer/
+
+ENTRYPOINT [ "/syncer/entrypoint.sh" ]
