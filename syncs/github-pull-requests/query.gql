@@ -1,0 +1,10 @@
+query($owner: String!, $repo: String!, $endCursor: String) {
+  repository(owner: $owner, name: $repo) {
+    name
+    pullRequests(first:10, after: $endCursor) {
+      nodes {
+
+      }
+    }
+  }
+}
