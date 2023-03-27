@@ -19,7 +19,7 @@ psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 export GITHUB_TOKEN=$MERGESTAT_AUTH_TOKEN
 
 # extract data and import into mergestat
-gh api graphql --paginate -F owner='{owner}' -F repo='{repo}' -q '.data.repository.pullRequests.nodes' -F query=@/query.gql \
+gh api graphql --paginate -F owner='{owner}' -F repo='{repo}' -q '.data.repository.pullRequests.nodes' -F query=@/syncer/query.gql \
   | jq -r '.[] | . + ({ "all_labels": [.labels.nodes[].name] | tostring })' \
   | jq -rc '[env.MERGESTAT_REPO_ID, .additions, .auhtor.login, .authorAssociation, .author.avatarUrl, .author.name, .baseRefOid, .baseRefName, .baseRepository.name, .body, .changedFiles, .closed, .closedAt .comments.totalCount, .commits.totalCount, .createdAt, .createdViaEmail, .databaseId, deletions, .editor.login, .headRefname, .headRefOid, .headRepository.name, .isDraft, .labels.totalCount, .lastEditedAt, .locked, .maintainerCanModify, .mergeable, .merged, .mergedAt, .mergedBy.login, .number, .participants.totalCount, .publishedAt, .reviewDecision, .state, .title, .updatedAt, .url, .all_labels]' \
   | psql $MERGESTAT_POSTGRES_URL -1 \

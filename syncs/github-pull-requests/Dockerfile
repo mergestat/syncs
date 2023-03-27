@@ -1,8 +1,9 @@
-FROM debian:buster-slim
+FROM alpine:3.17
 
-RUN apt-get update && apt-get install -y git postgresql-client jq
+# install latest version of git, psql and jq
+RUN apk upgrade && apk add --no-cache bash git postgresql-client jq github-cli
 
 RUN mkdir -p /syncer
-COPY schema.sql entrypoint.sh /syncer/
+COPY schema.sql entrypoint.sh query.gql /syncer/
 
 ENTRYPOINT [ "/syncer/entrypoint.sh" ]
