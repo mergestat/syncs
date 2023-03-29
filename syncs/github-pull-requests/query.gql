@@ -1,0 +1,72 @@
+query($owner: String!, $repo: String!, $endCursor: String) {
+  repository(owner: $owner, name: $repo) {
+    name
+    pullRequests(first:10, after: $endCursor) {
+      nodes {
+        additions
+        author {
+          login
+          avatarUrl
+          
+          ...on User {
+            name
+          }
+        }
+        authorAssociation
+        baseRefOid
+        baseRefName
+        baseRepository {
+          name
+        }
+        body
+        changedFiles
+        closed
+        closedAt
+        comments {
+          totalCount
+        }
+        commits {
+          totalCount
+        }
+        createdAt
+        createdViaEmail
+        databaseId
+        deletions
+        editor {
+          login
+        }
+        headRefName
+        headRefOid
+        headRepository {
+          name
+        }
+        isDraft
+        labels(first: 15) {
+          totalCount
+          nodes {
+            name
+          }
+        }
+        lastEditedAt
+        locked
+        maintainerCanModify
+        mergeable
+        merged
+        mergedAt
+        mergedBy {
+          login
+        }
+        number
+        participants {
+          totalCount
+        }
+        publishedAt
+        reviewDecision
+        state
+        title
+        updatedAt
+        url
+      }
+    }
+  }
+}
