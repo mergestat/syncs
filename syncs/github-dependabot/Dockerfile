@@ -3,7 +3,7 @@ FROM denoland/deno:1.32.3
 WORKDIR /app
 
 # Prefer not to run as root.
-USER deno
+# USER deno
 
 ADD . .
 
