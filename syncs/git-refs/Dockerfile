@@ -13,4 +13,6 @@ COPY --from=builder /go/mergestat-lite/.build/mergestat /usr/local/bin/mergestat
 RUN mkdir -p /syncer
 COPY schema.sql entrypoint.sh /syncer/
 
+LABEL com.mergestat.sync.clone="true"
+
 ENTRYPOINT [ "/syncer/entrypoint.sh" ]

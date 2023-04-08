@@ -13,12 +13,15 @@ set -euo pipefail
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
+set -e
+
 # apply postgresql schema for the syncer
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
 # extract data and import into mergestat
-mergestat --format json 'SELECT *, COALESCE(COMMIT_FROM_TAG(tag), hash) AS tag_commit_hash FROM refs' \
+mergestat --format json 'SELECT *, COALESCE(COMMIT_FROM_TAG(tag), hash) AS tag_commit_hash FROM refs' -r /mergestat/repo \
   | jq -rc '.[] | [env.MERGESTAT_REPO_ID, .full_name, .name, .hash, .remote, .target, .type, .tag_commit_hash] | @csv' \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \
+      -c "\set ON_ERROR_STOP on" \
       -c "DELETE FROM public.git_refs WHERE repo_id = '$MERGESTAT_REPO_ID'" \
       -c "\copy public.git_refs (repo_id, full_name, name, hash, remote, target, type, tag_commit_hash) FROM stdin (FORMAT csv)";
