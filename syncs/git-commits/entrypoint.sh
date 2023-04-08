@@ -13,12 +13,19 @@
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
-# @TODO: manage public.git_commits schema
+set -e
 
-git log --pretty=fuller --shortstat \
-    | jc --git-log-s -u \
-    | jq -rc '. + {"parents": (try (.merge | split(" ") | length) catch 0) }' \
-    | jq -rc '[env.MERGESTAT_REPO_ID, .commit, .message, .author, .author_email, .date, .commit_by, .commit_by_email, .commit_by_date, .parents] | @csv' \
-    | psql $MERGESTAT_POSTGRES_URL -1 \
-        -c "DELETE FROM git_commits WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-        -c "\copy git_commits (repo_id, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents) FROM stdin (FORMAT csv)";
+# apply postgresql schema for the syncer
+psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
+
+
+mergestat "SELECT '$MERGESTAT_REPO_ID', hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents FROM commits" \
+     -f csv-noheader \
+     -r /mergestat/repo > commits.csv
+
+
+# load the data into postgres
+cat commits.csv | psql $MERGESTAT_POSTGRES_URL -1 \
+  -c "\set ON_ERROR_STOP on" \
+  -c "DELETE FROM public.git_commits WHERE repo_id = '$MERGESTAT_REPO_ID'" \
+  -c "\copy public.git_commits (repo_id, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents) FROM stdin (FORMAT csv)"

@@ -1,11 +1,18 @@
-FROM python:3-alpine3.17
+FROM golang:1.19-buster as builder
 
-# install latest version of git, psql and jq
-RUN apk upgrade && apk add --no-cache git postgresql-client jq
+RUN apt-get update && apt-get -y install cmake libssl-dev git
+RUN git clone --recurse-submodules https://github.com/mergestat/mergestat-lite.git && cd mergestat-lite && make libgit2 && make
 
-# install json-cli (https://github.com/kellyjonbrazil/jc)
-# this is used to parse log output of different tools and convert them into json
-RUN pip3 install jc 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FROM debian:buster-slim
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
+RUN apt-get update && apt-get install -y git postgresql-client jq
+
+COPY --from=builder /go/mergestat-lite/.build/mergestat /usr/local/bin/mergestat
+
+RUN mkdir -p /syncer
+COPY schema.sql entrypoint.sh /syncer/
+
+LABEL com.mergestat.sync.clone="true"
+
+ENTRYPOINT [ "/syncer/entrypoint.sh" ]
