@@ -11,17 +11,16 @@
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
+set -e
+
 # apply postgresql schema for the syncer
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
-# cd into the repo directory
-cd /mergestat/repo
+# run the sync implementation
+git-blame-to-csv /mergestat/repo blame.csv
 
-# using git ls-tree and jq find all blobs to iterate over
-git ls-tree --format='{"type": "%(objecttype)", "path": "%(path)"}' -r HEAD | jq -r 'select(.type == "blob") | .path' > blobs.txt;
-
-(while read -r path; do python /syncer/blame.py $path; done < blobs.txt) \
-  | jq -rc '[env.MERGESTAT_REPO_ID, .email, .name, .time, .hash, .line_number, .line, .path] | @csv' \
-  | psql $MERGESTAT_POSTGRES_URL -1 \
-      -c "DELETE FROM public.git_blame WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-      -c "\copy public.git_blame (repo_id, author_email, author_name, author_when, commit_hash, line_no, line, path) FROM stdin (FORMAT csv)";
+# load the data into postgres
+cat blame.csv | psql $MERGESTAT_POSTGRES_URL -1 \
+  -c "\set ON_ERROR_STOP on" \
+  -c "DELETE FROM public.git_blame WHERE repo_id = '$MERGESTAT_REPO_ID'" \
+  -c "\copy public.git_blame (repo_id, author_email, author_name, author_when, commit_hash, line_no, line, path) FROM stdin (FORMAT csv)"
