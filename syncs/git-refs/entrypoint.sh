@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euxo pipefail
 
 #                                    _        _
 #  _ __ ___   ___ _ __ __ _  ___ ___| |_ __ _| |_
@@ -12,8 +12,6 @@ set -euo pipefail
 # This syncer uses mergestat-lite to sync git refs for the given repository.
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
-
-set -e
 
 # apply postgresql schema for the syncer
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql

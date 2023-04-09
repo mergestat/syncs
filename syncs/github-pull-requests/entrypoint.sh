@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euxo pipefail
 
 #                                    _        _
 #  _ __ ___   ___ _ __ __ _  ___ ___| |_ __ _| |_

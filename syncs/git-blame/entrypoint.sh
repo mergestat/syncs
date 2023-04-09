@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -euxo pipefail
+
 #                                    _        _
 #  _ __ ___   ___ _ __ __ _  ___ ___| |_ __ _| |_
 # | '_ ` _ \ / _ | '__/ _` |/ _ / __| __/ _` | __|
@@ -10,8 +12,6 @@
 # This script uses git blame to list blame data for all files in the repository.
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
-
-set -e
 
 # apply postgresql schema for the syncer
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
