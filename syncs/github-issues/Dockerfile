@@ -1,7 +1,13 @@
-FROM alpine:3.17
+FROM denoland/deno:1.32.3
 
-# install latest version of git, psql and jq
-RUN apk upgrade && apk add --no-cache git postgresql-client jq github-cli
+WORKDIR /app
+
+# Prefer not to run as root.
+USER deno
 
 COPY . .
-ENTRYPOINT [ "/entrypoint.sh" ]
+
+# Compile the main app so that it doesn't need to be compiled each startup/entry.
+RUN deno cache main.ts
+
+CMD ["run", "--allow-net", "--allow-env", "--allow-read", "main.ts"]
