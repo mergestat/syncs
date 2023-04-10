@@ -1,7 +1,7 @@
-query($owner: String!, $repo: String!, $endCursor: String) {
+query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
   repository(owner: $owner, name: $repo) {
     name
-    issues(first:10, after: $endCursor) {
+    issues(first: $perPage, after: $cursor) {
       nodes {
         author {
           login

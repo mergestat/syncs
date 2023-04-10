@@ -14,7 +14,7 @@ set -euo pipefail
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
 # Get the remote URL of the origin
-remote_url=$(git config --get remote.origin.url)
+remote_url=$MERGESTAT_REPO_URL
 
 # Parse the owner and name from the remote URL
 regex_https="(https|http):\/\/github.com\/([^\/]+)\/([^\/]+)(\.git)?\/?"
@@ -41,8 +41,9 @@ psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 export GITHUB_TOKEN=$MERGESTAT_AUTH_TOKEN
 
 # extract data and import into mergestat
-mergestat --format json "SELECT github_prs.number AS pr_number, github_pr_reviews.* FROM github_prs('$repository'), github_pr_reviews('$repository', github_prs.number) ORDER BY github_pr_reviews.created_at DESC" \
+mergestat --format json -v "SELECT github_prs.number AS pr_number, github_pr_reviews.* FROM github_prs('$repository'), github_pr_reviews('$repository', github_prs.number) ORDER BY github_pr_reviews.created_at DESC" \
   | jq -rc '.[] | [env.MERGESTAT_REPO_ID, .pr_number, .id, .author_login, .author_url, .author_association, .author_can_push_to_repository, .body, .comment_count, .created_at, .created_via_email, .editor_login, .last_edited_at, .published_at, .state, .submitted_at, .updated_at] | @csv' \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \
+    -c "\set ON_ERROR_STOP on" \
     -c "DELETE FROM public.github_pull_request_reviews WHERE repo_id = '$MERGESTAT_REPO_ID'" \
     -c "\copy public.github_pull_request_reviews (repo_id, pr_number, id, author_login, author_url, author_association, author_can_push_to_repository, body, comment_count, created_at, created_via_email, editor_login, last_edited_at, published_at, state, submitted_at, updated_at) FROM stdin (FORMAT csv)";

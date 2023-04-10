@@ -14,7 +14,7 @@ set -euo pipefail
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
 # Get the remote URL of the origin
-remote_url=$(git config --get remote.origin.url)
+remote_url=$MERGESTAT_REPO_URL
 
 # Parse the owner and name from the remote URL
 regex_https="(https|http):\/\/github.com\/([^\/]+)\/([^\/]+)(\.git)?\/?"
@@ -41,8 +41,9 @@ psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 export GITHUB_TOKEN=$MERGESTAT_AUTH_TOKEN
 
 # extract data and import into mergestat
-mergestat --format json "SELECT github_prs.number AS pr_number, github_pr_commits.* FROM github_prs('$repository'), github_pr_commits('$repository', github_prs.number)" \
+mergestat --format json -v "SELECT github_prs.number AS pr_number, github_pr_commits.* FROM github_prs('$repository'), github_pr_commits('$repository', github_prs.number)" \
   | jq -rc '.[] | [env.MERGESTAT_REPO_ID, .pr_number, .hash, .message, .author_name, .author_email, .author_when, .committer_name, .committer_email, .committer_when, .additions, .deletions, .changed_files, .url] | @csv' \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \
+    -c "\set ON_ERROR_STOP on" \
     -c "DELETE FROM public.github_pull_request_commits WHERE repo_id = '$MERGESTAT_REPO_ID'" \
     -c "\copy public.github_pull_request_commits (repo_id, pr_number, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, additions, deletions, changed_files, url) FROM stdin (FORMAT csv)";

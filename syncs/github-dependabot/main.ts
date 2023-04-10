@@ -27,11 +27,13 @@ const iterator = octokit.paginate.iterator(`GET /repos/${owner}/${repo}/dependab
 });
   
 for await (const { data: alerts } of iterator) {
+    console.log(`fetched page of dependabot alerts for: ${owner}/${repo} (${alerts.length} alerts)`)
     for (const alert of alerts) {
         alertsBuffer.push(alert)
     }
 }
 
+console.log(`fetched ${alertsBuffer.length} dependabot alerts for: ${owner}/${repo}`)
 
 const schemaSQL = await Deno.readTextFile("./schema.sql");
 const client = new Client(Deno.env.get("MERGESTAT_POSTGRES_URL"));
@@ -46,5 +48,7 @@ await tx.queryArray(`INSERT INTO public.github_repo_dependabot_alert_results (re
 await tx.commit();
 
 await client.end();
+
+console.log(`synced ${alertsBuffer.length} dependabot alerts for: ${owner}/${repo} (repo_id: ${repoID})`)
 
 Deno.exit(0)

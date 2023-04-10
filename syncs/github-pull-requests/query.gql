@@ -1,7 +1,7 @@
-query($owner: String!, $repo: String!, $endCursor: String) {
+query($owner: String!, $repo: String!, $perPage: Int!, $cursor: String) {
   repository(owner: $owner, name: $repo) {
     name
-    pullRequests(first:10, after: $endCursor) {
+    pullRequests(first: $perPage, after: $cursor) {
       nodes {
         additions
         author {
@@ -66,6 +66,10 @@ query($owner: String!, $repo: String!, $endCursor: String) {
         title
         updatedAt
         url
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
