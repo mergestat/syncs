@@ -4,7 +4,7 @@
 // |_| |_| |_|\___|_|  \__, |\___|___/\__\__,_|\__|
 //                     |___/
 //
-// This syncer uses the GitHub API to sync Dependabot alerts for the given repository.
+// This syncer uses the GitHub API to sync issues for the given repository.
 //
 // @author: Patrick DeVivo (patrick@mergestat.com)
 
