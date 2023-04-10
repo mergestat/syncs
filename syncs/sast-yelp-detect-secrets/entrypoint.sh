@@ -14,7 +14,7 @@ set -euo pipefail
 
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
-detect-secrets scan | jq -rc '[env.MERGESTAT_REPO_ID, . | tostring] | @csv' \
+detect-secrets scan -C /mergestat/repo | jq -rc '[env.MERGESTAT_REPO_ID, . | tostring] | @csv' \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \
       -c "\set ON_ERROR_STOP on" \
       -c "DELETE FROM public.yelp_detect_secrets_repo_scans WHERE repo_id = '$MERGESTAT_REPO_ID'" \

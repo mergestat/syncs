@@ -14,7 +14,7 @@ set -euo pipefail
 
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
-gitleaks detect --no-banner -f json -r _mergestat_gitleaks_scan_results.json
+gitleaks detect -s /mergestat/repo --no-banner -f json -r _mergestat_gitleaks_scan_results.json
 
 jq -rc '[env.MERGESTAT_REPO_ID, . | tostring] | @csv' _mergestat_gitleaks_scan_results.json \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \

@@ -15,7 +15,7 @@ set -euo pipefail
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
-/usr/local/bin/gosec -no-fail -fmt json ./... \
+(cd /mergestat/repo && /usr/local/bin/gosec -no-fail -fmt json ./...) \
     | jq -rc '.Issues | map(. + { "file": .file | sub("/src"; .file) }) | [env.MERGESTAT_REPO_ID, (. | tostring)] | @csv' \
     | psql $MERGESTAT_POSTGRES_URL -1 \
         -c "\set ON_ERROR_STOP on" \

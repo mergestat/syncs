@@ -12,4 +12,6 @@ RUN pip3 install detect-secrets
 RUN mkdir -p /syncer
 COPY . /syncer/
 
+LABEL com.mergestat.sync.clone="true"
+
 ENTRYPOINT [ "/syncer/entrypoint.sh" ]
