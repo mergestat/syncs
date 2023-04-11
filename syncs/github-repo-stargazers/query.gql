@@ -1,0 +1,27 @@
+query($owner: String!, $repo: String!, $perPage: Int!, $cursor: String) {
+  repository(owner: $owner, name: $repo) {
+    name
+    stargazers(first: $perPage, after: $cursor) {
+      edges {
+        starredAt
+        node {
+            login
+            email
+            name
+            bio
+            company
+            avatarUrl
+            createdAt
+            updatedAt
+            twitterUsername
+            websiteUrl
+            location
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
