@@ -21,6 +21,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      packages: write
     needs: list-syncs
     strategy:
       matrix:
@@ -37,6 +38,7 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             mergestat/sync-${{ matrix.syncs }}
+            ghcr.io/mergestat/sync-${{ matrix.syncs }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
@@ -60,6 +62,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       -
         name: Build and push
         uses: docker/build-push-action@v3
