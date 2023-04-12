@@ -35,13 +35,13 @@ for await (const response of iterator) {
     }
 }
 
-console.log(`fetched ${prsBuffer.length} issues for: ${owner}/${repo}`)
+console.log(`fetched ${prsBuffer.length} pull requests for: ${owner}/${repo}`)
 
 const schemaSQL = await Deno.readTextFile("./schema.sql");
 const client = new Client(Deno.env.get("MERGESTAT_POSTGRES_URL"));
 await client.connect();
 
-const tx = await client.createTransaction("syncs/github-issues");
+const tx = await client.createTransaction("syncs/github-pull-requests");
 await tx.begin()
 
 await tx.queryArray(schemaSQL);
