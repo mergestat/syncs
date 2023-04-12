@@ -23,6 +23,7 @@ jobs:
       packages: write
     needs: list-syncs
     strategy:
+      fail-fast: false
       matrix:
         syncs: ${{ fromJson(needs.list-syncs.outputs.matrix) }}
     steps:
