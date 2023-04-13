@@ -25,7 +25,9 @@ mergestat "SELECT '$MERGESTAT_REPO_ID', hash, message, author_name, author_email
 
 
 # load the data into postgres
-cat commits.csv | psql $MERGESTAT_POSTGRES_URL -1 \
-  -c "\set ON_ERROR_STOP on" \
-  -c "DELETE FROM public.git_commits WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-  -c "\copy public.git_commits (repo_id, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents) FROM stdin (FORMAT csv)"
+cat commits.csv | psql $MERGESTAT_POSTGRES_URL --quiet <<EOF
+  BEGIN;
+    DELETE FROM public.git_commits WHERE repo_id = '$MERGESTAT_REPO_ID';
+    COPY public.git_commits (repo_id, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents) FROM stdin (FORMAT csv)"
+  COMMIT;
+EOF

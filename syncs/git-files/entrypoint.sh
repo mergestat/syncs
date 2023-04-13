@@ -22,7 +22,9 @@ mergestat "SELECT '$MERGESTAT_REPO_ID', path, executable, CASE (instr(cast(conte
     -r /mergestat/repo > files.csv
 
 # load the data into postgres
-cat files.csv | psql $MERGESTAT_POSTGRES_URL -1 \
-  -c "\set ON_ERROR_STOP on" \
-  -c "DELETE FROM public.git_files WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-  -c "\copy public.git_files (repo_id, path, executable, contents) FROM stdin (FORMAT csv)"
+cat files.csv | psql $MERGESTAT_POSTGRES_URL --quiet <<EOF
+  BEGIN;
+    DELETE FROM public.git_files WHERE repo_id = '$MERGESTAT_REPO_ID';
+    COPY public.git_files (repo_id, path, executable, contents) FROM stdin (FORMAT csv);
+  COMMIT;
+EOF
