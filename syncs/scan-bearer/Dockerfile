@@ -1,5 +1,4 @@
-FROM bearer/bearer:1.3.0 AS bearer
-
+FROM bearer/bearer:1.3.1 AS bearer
 FROM alpine:3.17.3
 
 COPY --from=bearer /usr/local/bin/bearer /usr/local/bin/bearer
