@@ -15,6 +15,8 @@ set -euo pipefail
 #
 # @author: Riyaz Ali (riyaz@mergestat.com)
 
+psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
+
 /usr/local/bin/gosec -fmt json /mergestat/repo > _mergestat_gosec_scan_results.json
 
 cat _mergestat_gosec_scan_results.json \
