@@ -14,7 +14,7 @@ set -euo pipefail
 
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
-bearer scan /mergestat/repo --format json > _mergestat_bearer_scan_results.json
+bearer scan /mergestat/repo --format json --debug > _mergestat_bearer_scan_results.json
 
 jq -rc '[env.MERGESTAT_REPO_ID, . | tostring] | @csv' _mergestat_bearer_scan_results.json \
   | psql $MERGESTAT_POSTGRES_URL -1 --quiet \
