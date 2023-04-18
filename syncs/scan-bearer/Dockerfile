@@ -1,14 +1,11 @@
-FROM bearer/bearer:1.3.0 AS bearer
-
-FROM alpine:3.17.3
-
-COPY --from=bearer /usr/local/bin/bearer /usr/local/bin/bearer
+FROM golang:1.19-alpine3.16 AS builder
 
 # install latest version of git, psql and jq
-RUN apk upgrade && apk add --no-cache git postgresql-client jq
+RUN apk upgrade && apk add --no-cache git postgresql-client jq build-base
 
 RUN mkdir -p /syncer
 COPY . /syncer/
+RUN cd /syncer && ./install-bearer.sh
 
 LABEL com.mergestat.sync.clone="true"
 
