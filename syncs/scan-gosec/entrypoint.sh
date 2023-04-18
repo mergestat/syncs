@@ -17,7 +17,7 @@ set -euo pipefail
 
 psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 
-/usr/local/bin/gosec -fmt json /mergestat/repo > _mergestat_gosec_scan_results.json
+/usr/local/bin/gosec -r -fmt json /mergestat/repo > _mergestat_gosec_scan_results.json
 
 cat _mergestat_gosec_scan_results.json \
     | jq -rc '.Issues | map(. + { "file": .file | sub("/src"; .file) }) | [env.MERGESTAT_REPO_ID, (. | tostring)] | @csv' \
