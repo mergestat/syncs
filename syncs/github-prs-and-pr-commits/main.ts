@@ -64,6 +64,7 @@ const tx = await client.createTransaction("syncs/github-prs-and-pr-commits");
 await tx.begin()
 
 await tx.queryArray(`DELETE FROM public.github_pull_requests WHERE repo_id = $1;`, [repoID]);
+await tx.queryArray(`DELETE FROM public.github_pull_request_commits WHERE repo_id = $1;`, [repoID]);
 
 for await (const pr of buffer) {
     await tx.queryArray(`
@@ -71,7 +72,6 @@ INSERT INTO public.github_pull_requests (repo_id, additions, author_login, autho
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41)
     `, [repoID, pr.additions, pr.user?.login, pr.author_association, pr.user?.avatar_url, null, pr.base?.sha, pr.base?.ref, pr.base?.repo?.full_name, pr.body, pr.changed_files, pr.closed === 'closed', pr.closed_at, null, pr.commits?.length, pr.created_at, null, pr.id, pr.deletions, null, pr.head?.ref, pr.head?.sha, pr.head?.repo?.full_name, pr.draft, pr.labels?.length, null, pr.locked, null, null, pr.merged_at !== null, pr.merged_at, null, pr.number, null, null, null, pr.state, pr.title, pr.updated_at, pr.url, JSON.stringify(pr.labels.map((l: {name: string}) => l.name))]);
 
-    await tx.queryArray(`DELETE FROM public.github_pull_request_commits WHERE repo_id = $1;`, [repoID]);
     for await (const commit of pr._commits) {
         await tx.queryArray(`
 INSERT INTO public.github_pull_request_commits (repo_id, pr_number, hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, additions, deletions, changed_files, url)
