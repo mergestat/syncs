@@ -23,10 +23,15 @@ const { data: repoInfo } = await octokit.rest.repos.get({
     repo,
 });
 
-// TODO(patrickdevivo) this throws an error if there are no releases, which is not great
 const { data: latestRelease } = await octokit.rest.repos.getLatestRelease({
     owner,
     repo,
+}).catch((e: any) => {
+    // if a 404 is thrown, it means there is no release
+    // so we return null to handle it gracefully
+    if (e.status === 404) {
+        return { data: null }
+    }
 });
 
 const releasesIter = octokit.paginate.iterator(octokit.rest.repos.listReleases, {
