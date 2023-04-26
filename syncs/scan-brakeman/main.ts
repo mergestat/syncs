@@ -4,7 +4,7 @@
 // |_| |_| |_|\___|_|  \__, |\___|___/\__\__,_|\__|
 //                     |___/
 //
-// This syncer uses the GitHub API to sync issues for the given repository.
+// This sync runs the brakeman (https://brakemanscanner.org/) scanner on a repo.
 //
 // @author: Riyaz Ali (riyaz@mergestat.com)
 
