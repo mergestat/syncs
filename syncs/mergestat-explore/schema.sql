@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS _mergestat_explore_repo_metadata (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
     last_commit_hash text,
     CONSTRAINT _mergestat_explore_repo_metadata_pkey PRIMARY KEY (repo_id)
-)
+);
 
 COMMENT ON TABLE _mergestat_explore_repo_metadata IS 'repo metadata for explore experience';
 COMMENT ON COLUMN _mergestat_explore_repo_metadata.repo_id IS 'foreign key for public.repos.id';
@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS _mergestat_explore_file_metadata (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
     path text,
     last_commit_hash text,
-    CONSTRAINT _mergestat_explore_repo_metadata_pkey PRIMARY KEY (repo_id, path)
-)
+    CONSTRAINT _mergestat_explore_file_metadata_pkey PRIMARY KEY (repo_id, path)
+);
 
 COMMENT ON TABLE _mergestat_explore_file_metadata IS 'file metadata for explore experience';
 COMMENT ON COLUMN _mergestat_explore_file_metadata.repo_id IS 'foreign key for public.repos.id';

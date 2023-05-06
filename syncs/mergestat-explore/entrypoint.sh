@@ -62,3 +62,16 @@ cat files_utf8.csv | psql $MERGESTAT_POSTGRES_URL -1 \
   -c "\copy public.git_files (repo_id, path, executable, contents) FROM stdin (FORMAT csv)"
 
 rm files.csv files_utf8.csv
+
+# populate _mergestat_explore_repo_metadata
+psql $MERGESTAT_POSTGRES_URL -1 \
+  -c "\set ON_ERROR_STOP on" \
+  -c "DELETE FROM public._mergestat_explore_repo_metadata WHERE repo_id = '$MERGESTAT_REPO_ID'" \
+  -c "INSERT INTO _mergestat_explore_repo_metadata (repo_id, last_commit_hash) SELECT DISTINCT ON (repo_id) repo_id, hash AS last_commit_hash FROM git_commits WHERE repo_id = '$MERGESTAT_REPO_ID' AND git_commits.parents < 2 ORDER BY repo_id, author_when DESC"
+
+
+# populate _mergestat_explore_file_metadata
+psql $MERGESTAT_POSTGRES_URL -1 \
+  -c "\set ON_ERROR_STOP on" \
+  -c "DELETE FROM public._mergestat_explore_file_metadata WHERE repo_id = '$MERGESTAT_REPO_ID'" \
+  -c "INSERT INTO _mergestat_explore_file_metadata (repo_id, path, last_commit_hash) SELECT DISTINCT ON (git_commits.repo_id, file_path) git_commits.repo_id, file_path AS path, hash AS last_commit_hash FROM git_commit_stats JOIN git_commits ON git_commits.hash = git_commit_stats.commit_hash WHERE git_commits.parents < 2 ORDER BY repo_id, file_path, author_when DESC;"
