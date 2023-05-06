@@ -74,4 +74,4 @@ psql $MERGESTAT_POSTGRES_URL -1 \
 psql $MERGESTAT_POSTGRES_URL -1 \
   -c "\set ON_ERROR_STOP on" \
   -c "DELETE FROM public._mergestat_explore_file_metadata WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-  -c "INSERT INTO _mergestat_explore_file_metadata (repo_id, path, last_commit_hash) SELECT DISTINCT ON (git_commits.repo_id, file_path) git_commits.repo_id, file_path AS path, hash AS last_commit_hash FROM git_commit_stats JOIN git_commits ON git_commits.hash = git_commit_stats.commit_hash WHERE git_commits.parents < 2 ORDER BY repo_id, file_path, author_when DESC;"
+  -c "INSERT INTO _mergestat_explore_file_metadata (repo_id, path, last_commit_hash) SELECT DISTINCT ON (git_commits.repo_id, file_path) git_commits.repo_id, file_path AS path, hash AS last_commit_hash FROM git_commit_stats JOIN git_commits ON git_commits.hash = git_commit_stats.commit_hash WHERE repo_id = '$MERGESTAT_REPO_ID' AND git_commits.parents < 2 ORDER BY repo_id, file_path, author_when DESC;"
