@@ -20,7 +20,9 @@ psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
 git-blame-to-csv /mergestat/repo blame.csv
 
 # load the data into postgres
-cat blame.csv | psql $MERGESTAT_POSTGRES_URL -1 \
-  -c "\set ON_ERROR_STOP on" \
-  -c "DELETE FROM public.git_blame WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-  -c "\copy public.git_blame (repo_id, author_email, author_name, author_when, commit_hash, line_no, line, path) FROM stdin (FORMAT csv)"
+cat blame.csv | psql $MERGESTAT_POSTGRES_URL --quiet <<EOF
+  BEGIN;
+    DELETE FROM public.git_blame WHERE repo_id = '$MERGESTAT_REPO_ID';
+    COPY public.git_blame (repo_id, author_email, author_name, author_when, commit_hash, line_no, line, path) FROM stdin (FORMAT csv);
+  COMMIT;
+EOF

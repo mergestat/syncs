@@ -22,7 +22,9 @@ mergestat "SELECT '$MERGESTAT_REPO_ID', hash, file_path, additions, deletions, o
 
 
 # load the data into postgres
-cat commit-stats.csv | psql $MERGESTAT_POSTGRES_URL -1 \
-  -c "\set ON_ERROR_STOP on" \
-  -c "DELETE FROM public.git_commit_stats WHERE repo_id = '$MERGESTAT_REPO_ID'" \
-  -c "\copy public.git_commit_stats (repo_id, commit_hash, file_path, additions, deletions, old_file_mode, new_file_mode) FROM stdin (FORMAT csv)"
+cat commit-stats.csv | psql $MERGESTAT_POSTGRES_URL --quiet <<EOF
+  BEGIN;
+    DELETE FROM public.git_commit_stats WHERE repo_id = '$MERGESTAT_REPO_ID';
+    COPY public.git_commit_stats (repo_id, commit_hash, file_path, additions, deletions, old_file_mode, new_file_mode) FROM stdin (FORMAT csv);
+  COMMIT;
+EOF
