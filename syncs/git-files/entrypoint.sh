@@ -21,8 +21,11 @@ mergestat "SELECT '$MERGESTAT_REPO_ID', path, executable, CASE (instr(cast(conte
     -f csv-noheader \
     -r /mergestat/repo > files.csv
 
+# Assuming input file is UTF-8 and converting to UTF-8 but skipping invalid characters
+iconv -f UTF-8 -t UTF-8 -c < files.csv > files_utf8.csv
+
 # load the data into postgres
-cat files.csv | psql $MERGESTAT_POSTGRES_URL -1 \
+cat files_utf8.csv | psql $MERGESTAT_POSTGRES_URL -1 \
   -c "\set ON_ERROR_STOP on" \
   -c "DELETE FROM public.git_files WHERE repo_id = '$MERGESTAT_REPO_ID'" \
   -c "\copy public.git_files (repo_id, path, executable, contents) FROM stdin (FORMAT csv)"
