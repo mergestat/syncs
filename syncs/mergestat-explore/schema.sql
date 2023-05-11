@@ -101,3 +101,50 @@ COMMENT ON TABLE _mergestat_explore_file_metadata IS 'file metadata for explore 
 COMMENT ON COLUMN _mergestat_explore_file_metadata.repo_id IS 'foreign key for public.repos.id';
 COMMENT ON COLUMN _mergestat_explore_file_metadata.path IS 'path to the file';
 COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_hash IS 'hash based reference to last commit';
+
+--Add more commit columns to prevent the need to fetch it
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_message TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_author_name TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_author_email TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_author_when TIMESTAMP WITH TIME ZONE;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_committer_name TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_committer_email TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_committer_when TIMESTAMP WITH TIME ZONE;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS last_commit_parents INTEGER;
+ALTER TABLE IF EXISTS _mergestat_explore_repo_metadata ADD IF NOT EXISTS _mergestat_synced_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW();
+
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_message IS 'message of the commit';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_author_name IS 'name of the author of the the modification';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_author_email IS 'email of the author of the modification';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_author_when IS 'timestamp of when the modifcation was authored';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_committer_name IS 'name of the author who committed the modification';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_committer_email IS 'email of the author who committed the modification';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_committer_when IS 'timestamp of when the commit was made';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata.last_commit_parents IS 'the number of parents of the commit';
+COMMENT ON COLUMN _mergestat_explore_repo_metadata._mergestat_synced_at IS 'timestamp when record was synced into the MergeStat database';
+
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_message TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_author_name TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_author_email TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_author_when TIMESTAMP WITH TIME ZONE;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_committer_name TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_committer_email TEXT;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_committer_when TIMESTAMP WITH TIME ZONE;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS last_commit_parents INTEGER;
+ALTER TABLE IF EXISTS _mergestat_explore_file_metadata ADD IF NOT EXISTS _mergestat_synced_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW();
+
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_message IS 'message of the commit';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_author_name IS 'name of the author of the the modification';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_author_email IS 'email of the author of the modification';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_author_when IS 'timestamp of when the modifcation was authored';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_committer_name IS 'name of the author who committed the modification';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_committer_email IS 'email of the author who committed the modification';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_committer_when IS 'timestamp of when the commit was made';
+COMMENT ON COLUMN _mergestat_explore_file_metadata.last_commit_parents IS 'the number of parents of the commit';
+COMMENT ON COLUMN _mergestat_explore_file_metadata._mergestat_synced_at IS 'timestamp when record was synced into the MergeStat database';
+
+--add indexing for performance
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX IF NOT EXISTS idx_gist_git_files_path ON git_files USING gist (path gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_git_commit_stats_repo_id_hash_file_path ON git_commit_stats (repo_id, commit_hash, file_path);
+CREATE INDEX IF NOT EXISTS idx_git_commits_repo_id_hash_parents ON git_commits(repo_id, hash, parents);
