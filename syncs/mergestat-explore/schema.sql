@@ -148,3 +148,7 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX IF NOT EXISTS idx_gist_git_files_path ON git_files USING gist (path gist_trgm_ops);
 CREATE INDEX IF NOT EXISTS idx_git_commit_stats_repo_id_hash_file_path ON git_commit_stats (repo_id, commit_hash, file_path);
 CREATE INDEX IF NOT EXISTS idx_git_commits_repo_id_hash_parents ON git_commits(repo_id, hash, parents);
+
+--Allow email to be null
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN author_email DROP NOT NULL;
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN committer_email DROP NOT NULL;
