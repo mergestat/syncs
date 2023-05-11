@@ -31,3 +31,9 @@ COMMENT ON COLUMN git_commits._mergestat_synced_at IS 'timestamp when record was
 CREATE UNIQUE INDEX IF NOT EXISTS commits_pkey ON git_commits(repo_id uuid_ops,hash text_ops);
 CREATE INDEX IF NOT EXISTS commits_author_when_idx ON git_commits(repo_id uuid_ops,author_when timestamptz_ops);
 CREATE INDEX IF NOT EXISTS idx_commits_repo_id_fkey ON git_commits(repo_id uuid_ops);
+
+--Allow names and emails to be null
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN author_name DROP NOT NULL;
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN author_email DROP NOT NULL;
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN committer_name DROP NOT NULL;
+ALTER TABLE IF EXISTS git_commits ALTER COLUMN committer_email DROP NOT NULL;
