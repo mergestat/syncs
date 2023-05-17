@@ -11,7 +11,7 @@ COMMENT ON COLUMN trivy_repo_scans._mergestat_synced_at IS 'timestamp when recor
 CREATE UNIQUE INDEX IF NOT EXISTS trivy_repo_scans_pkey ON trivy_repo_scans(repo_id uuid_ops);
 CREATE INDEX IF NOT EXISTS idx_trivy_repo_id_fkey ON trivy_repo_scans(repo_id uuid_ops);
 
-
+DROP VIEW IF EXISTS trivy_repo_vulnerabilities;
 CREATE OR REPLACE VIEW trivy_repo_vulnerabilities AS  SELECT trivy_repo_scans.repo_id,
     v.value AS vulnerability,
     r.value ->> 'Target'::text AS target,
