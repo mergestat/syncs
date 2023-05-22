@@ -22,7 +22,8 @@ mergestat "SELECT '$MERGESTAT_REPO_ID', path, executable, CASE (instr(cast(conte
     -r /mergestat/repo > files.csv
 
 # Assuming input file is UTF-8 and converting to UTF-8 but skipping invalid characters
-iconv -f UTF-8 -t UTF-8 -c < files.csv > files_utf8.csv
+iconv -f UTF-8 -t UTF-16 -c < files.csv > files_utf16.csv
+iconv -f UTF-16 -t UTF-8 -c < files_utf16.csv > files_utf8.csv
 
 # load the data into postgres
 cat files_utf8.csv | psql $MERGESTAT_POSTGRES_URL -1 \
