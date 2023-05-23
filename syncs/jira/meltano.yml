@@ -1,0 +1,29 @@
+version: 1
+project_id: 18f4dd5f-da7e-4765-bbc3-6d6ee0a70311
+environments:
+- name: mergestat
+  config:
+    plugins:
+      extractors:
+      - name: tap-jira
+        config:
+          username: ${JIRA_USERNAME}
+          password: ${JIRA_PASSWORD}
+      loaders:
+      - name: target-postgres
+        config:
+          sqlalchemy_url: ${MERGESTAT_POSTGRES_URL}
+plugins:
+  extractors:
+  - name: tap-jira
+    variant: singer-io
+    pip_url: git+https://github.com/singer-io/tap-jira.git
+    config:
+      base_url: ${JIRA_BASE_URL}
+      start_date: ${JIRA_START_DATE}
+    select:
+    - issues.*
+  loaders:
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-postgres.git
