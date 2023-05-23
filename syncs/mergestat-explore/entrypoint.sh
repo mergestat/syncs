@@ -13,10 +13,6 @@ set -euo pipefail
 #
 # @author: Patrick DeVivo (patrick@mergestat.com)
 
-# apply postgresql schema for the syncer
-psql $MERGESTAT_POSTGRES_URL -1 --quiet --file /syncer/schema.sql
-
-
 # handle git_commits
 mergestat "SELECT '$MERGESTAT_REPO_ID', hash, message, author_name, author_email, author_when, committer_name, committer_email, committer_when, parents FROM commits" \
      -f csv-noheader \
