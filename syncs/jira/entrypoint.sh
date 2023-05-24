@@ -2,6 +2,7 @@
 set -euo pipefail
 
 export NO_COLOR=true
+export MELTANO_ENVIRONMENT=mergestat
 
 # setup table schema
 psql $MERGESTAT_POSTGRES_URL --quiet -1 -c 'CREATE TABLE IF NOT EXISTS mergestat.tap_states(repo UUID, tap TEXT, state JSON, PRIMARY KEY(repo, tap), FOREIGN KEY (repo) REFERENCES public.repos (id))';
