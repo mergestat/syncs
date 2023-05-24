@@ -11,7 +11,7 @@ psql $MERGESTAT_POSTGRES_URL --quiet -1 -c 'CREATE TABLE IF NOT EXISTS mergestat
 psql $MERGESTAT_POSTGRES_URL --quiet -t -c "SELECT state FROM mergestat.tap_states WHERE repo = '$MERGESTAT_REPO_ID' AND tap = 'mergestat:tap-jira-to-target-postgres'" > .meltano/_state.json
 meltano state set mergestat:tap-jira-to-target-postgres --input-file .meltano/_state.json --force
 
-meltano --environment mergestat run tap-jira target-postgres
+meltano run tap-jira target-postgres
 
 # save state
 meltano state get mergestat:tap-jira-to-target-postgres > .meltano/_state.json
