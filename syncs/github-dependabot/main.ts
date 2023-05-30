@@ -8,7 +8,7 @@
 //
 // @author: Patrick DeVivo (patrick@mergestat.com)
 
-import { Octokit } from "https://cdn.jsdelivr.net/npm/octokit@2.0.19/+esm";
+import { Octokit } from "https://esm.sh/octokit@2.0.19";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
