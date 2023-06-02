@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y git postgresql-client jq
 COPY --from=builder /go/mergestat-lite/.build/mergestat /usr/local/bin/mergestat
 
 RUN mkdir -p /syncer
-COPY schema.sql entrypoint.sh /syncer/
+COPY entrypoint.sh /syncer/
 
 LABEL com.mergestat.sync.clone="true"
 
