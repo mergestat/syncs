@@ -6,7 +6,7 @@
 //
 // This syncer uses the GitHub API to sync issues for the given repository.
 //
-// @author: Patrick DeVivo (patrick@mergestat.com)
+// @author: Patrick DeVivo (patrick@mergestat.com) 
 
 import { Octokit } from "https://esm.sh/octokit@2.0.14";
 import { paginateGraphql } from "https://cdn.jsdelivr.net/npm/@octokit/plugin-paginate-graphql@2.0.1/+esm";
