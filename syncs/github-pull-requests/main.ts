@@ -8,7 +8,7 @@
 //
 // @author: Patrick DeVivo (patrick@mergestat.com)
 
-import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
+import { Octokit } from "/octokit@2.0.14";
 import { paginateGraphql } from "https://cdn.jsdelivr.net/npm/@octokit/plugin-paginate-graphql@2.0.1/+esm";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
