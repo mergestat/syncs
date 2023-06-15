@@ -9,7 +9,7 @@
 // @author: Patrick DeVivo (patrick@mergestat.com) 
 
 import { Octokit } from "https://esm.sh/octokit@2.0.14";
-import { paginateGraphql } from "https://cdn.jsdelivr.net/npm/@octokit/plugin-paginate-graphql@2.0.1/+esm";
+import { paginateGraphql } from "https://esm.sh/@octokit/plugin-paginate-graphql@2.0.1";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 const query = await Deno.readTextFile("./query.gql");
