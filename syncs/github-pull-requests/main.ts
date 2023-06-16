@@ -10,6 +10,7 @@
 
 import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
 import { paginateGraphql } from "https://cdn.jsdelivr.net/npm/@octokit/plugin-paginate-graphql@2.0.1/+esm";
+import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 const query = await Deno.readTextFile("./query.gql");
@@ -18,8 +19,29 @@ const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
 const repo = repoURL.pathname.split("/")[2];
 
-const OctokitWithGrapQLPagination = Octokit.plugin(paginateGraphql);
-const octokit = new OctokitWithGrapQLPagination({ auth: Deno.env.get("MERGESTAT_AUTH_TOKEN") });
+const OctokitWithGrapQLPagination = Octokit.plugin(paginateGraphql, throttling);
+const octokit = new OctokitWithGrapQLPagination({
+    auth: Deno.env.get("MERGESTAT_AUTH_TOKEN"),
+    throttle: {
+        onRateLimit: (retryAfter, options, octokit, retryCount) => {
+          octokit.log.warn(
+            `Request quota exhausted for request ${options.method} ${options.url}`
+          );
+    
+          if (retryCount < 1) {
+            // only retries once
+            octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+            return true;
+          }
+        },
+        onSecondaryRateLimit: (retryAfter, options, octokit) => {
+          // does not retry, only logs a warning
+          octokit.log.warn(
+            `SecondaryRateLimit detected for request ${options.method} ${options.url}`
+          );
+        },
+      },
+});
 
 const prsBuffer = [];
 

@@ -9,6 +9,7 @@
 // @author: Patrick DeVivo (patrick@mergestat.com)
 
 import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
+import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
@@ -16,7 +17,29 @@ const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
 const repo = repoURL.pathname.split("/")[2];
 
-const octokit = new Octokit({ auth: Deno.env.get("MERGESTAT_AUTH_TOKEN") });
+const OctokitWithThrottling = Octokit.plugin(throttling);
+const octokit = new OctokitWithThrottling({
+    auth: Deno.env.get("MERGESTAT_AUTH_TOKEN"),
+    throttle: {
+        onRateLimit: (retryAfter, options, octokit, retryCount) => {
+          octokit.log.warn(
+            `Request quota exhausted for request ${options.method} ${options.url}`
+          );
+    
+          if (retryCount < 1) {
+            // only retries once
+            octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+            return true;
+          }
+        },
+        onSecondaryRateLimit: (retryAfter, options, octokit) => {
+          // does not retry, only logs a warning
+          octokit.log.warn(
+            `SecondaryRateLimit detected for request ${options.method} ${options.url}`
+          );
+        },
+      },
+});
 const alertsBuffer = [];
 
 const iterator = octokit.paginate.iterator(`GET /repos/${owner}/${repo}/dependabot/alerts`, {
