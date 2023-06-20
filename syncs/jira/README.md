@@ -13,4 +13,5 @@ To use this sync, create a new container-based sync in mergestat using `ghcr.io/
 
 ## Caveats
 
-Currently, this sync only works with either Postgres v14 with implicit authentication. To use it with password-based authentication, use Postgres v13 or below.
+Currently, this sync only works with either Postgres v14 with implicit authentication. To use it with password-based authentication, use Postgres v13 or below. 
+This is being tracked under mergestat/syncs#80
