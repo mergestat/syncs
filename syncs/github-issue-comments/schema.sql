@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS github_issue_comments (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
-    id integer,
+    id bigint,
     node_id text,
     issue_number integer,
     url text,
@@ -38,5 +38,4 @@ COMMENT ON COLUMN github_issue_comments.body IS 'body of the issue comment';
 COMMENT ON COLUMN github_issue_comments.reactions IS 'reactions on the issue comment';
 COMMENT ON COLUMN github_issue_comments._mergestat_synced_at IS 'timestamp when record was synced into the MergeStat database';
 
-CREATE UNIQUE INDEX IF NOT EXISTS github_issue_comments_pkey ON github_issue_comments(repo_id uuid_ops,id int4_ops);
 CREATE INDEX IF NOT EXISTS idx_github_issue_comments_repo_id_fkey ON github_issue_comments(repo_id uuid_ops);
