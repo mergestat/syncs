@@ -69,15 +69,14 @@ await tx.queryArray(schemaSQL);
 await tx.queryArray(`DELETE FROM public.github_pr_review_comments WHERE repo_id = $1;`, [repoID]);
 for await (const comment of commentsBuffer) {
     await tx.queryArray(`
-INSERT INTO public.github_pr_review_comments (repo_id, url, pull_request_review_id, pull_request_number, id, node_id, diff_hunk, path, commit_id, original_commit_id, user_login, user_id, user_avatar_url, user_url, created_at, updated_at, author_association, body, reactions, start_line, original_start_line, start_side, line, original_line, side, original_position, position, subject_type)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28)
+INSERT INTO public.github_pr_review_comments (repo_id, url, pull_request_review_id, pull_request_number, id, diff_hunk, path, commit_id, original_commit_id, user_login, user_id, user_avatar_url, user_url, created_at, updated_at, author_association, body, reactions, start_line, original_start_line, start_side, line, original_line, side, original_position, position, subject_type)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)
     `, [
         repoID,
         comment.url,
         comment.pull_request_review_id,
         comment.pull_request_url.split("/").pop(),
         comment.id,
-        comment.node_id,
         comment.diff_hunk,
         comment.path,
         comment.commit_id,

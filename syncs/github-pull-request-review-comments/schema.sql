@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS github_pr_review_comments (
     pull_request_review_id bigint,
     pull_request_number integer,
     id bigint,
-    node_id text,
     diff_hunk text,
     path text,
     commit_id text,
@@ -39,7 +38,6 @@ COMMENT ON COLUMN github_pr_review_comments.url IS 'URL to the issue comment';
 COMMENT ON COLUMN github_pr_review_comments.pull_request_review_id IS 'id of the pull request review';
 COMMENT ON COLUMN github_pr_review_comments.pull_request_number IS 'pull request number';
 COMMENT ON COLUMN github_pr_review_comments.id IS 'id of the review comment';
-COMMENT ON COLUMN github_pr_review_comments.node_id IS 'node id of the review comment';
 COMMENT ON COLUMN github_pr_review_comments.diff_hunk IS 'diff hunk';
 COMMENT ON COLUMN github_pr_review_comments.path IS 'file path';
 COMMENT ON COLUMN github_pr_review_comments.commit_id IS 'commit id';
