@@ -12,6 +12,7 @@ import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
 import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}");
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
@@ -57,8 +58,11 @@ const { data: latestRelease } = await octokit.rest.repos.getLatestRelease({
     }
 });
 
+const perPage = params.perPage || 100;
+
 const releasesIter = octokit.paginate.iterator(octokit.rest.repos.listReleases, {
-    owner, repo
+    owner, repo,
+    per_page: perPage,
 })
 
 let totalReleases = 0;

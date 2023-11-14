@@ -12,6 +12,7 @@ import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
 import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}");
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
@@ -41,12 +42,14 @@ const octokit = new OctokitWithThrottling({
       },
 });
 const commentsBuffer = [];
+const perPage = params.perPage || 100;
 
 const iterator = octokit.paginate.iterator(`GET /repos/${owner}/${repo}/issues/comments`, {
     headers: {
         'X-GitHub-Api-Version': '2022-11-28'
     },
-    owner, repo
+    owner, repo,
+    per_page: perPage,
 });
   
 for await (const { data: comments } of iterator) {

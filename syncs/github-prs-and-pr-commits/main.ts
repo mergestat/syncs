@@ -11,8 +11,8 @@ import { Octokit } from "https://esm.sh/v124/octokit@2.0.14";
 import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}");
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
-const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
 const repo = repoURL.pathname.split("/")[2];
@@ -41,7 +41,7 @@ const octokit = new OctokitWithThrottling({
       },
 });
 const buffer = []
-const perPage = params.perPage || 30
+const perPage = params.perPage || 100;
 const state = params.state || "all"
 
 // iterator to fetch PRs for the given repo
