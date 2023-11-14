@@ -70,9 +70,9 @@ await tx.queryArray(schemaSQL);
 await tx.queryArray(`DELETE FROM public.github_issue_events WHERE repo_id = $1;`, [repoID]);
 for await (const event of eventsBuffer) {
     await tx.queryArray(`
-INSERT INTO public.github_issue_events (repo_id, id, node_id, issue_number, url, actor_login, actor_id, actor_avatar_url, actor_url, event, commit_id, commit_url, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-    `, [repoID, event.id, event.node_id, event.issue?.number, event.url, event.actor?.login, event.actor?.id, event.actor?.avatar_url, event.actor?.url, event.event, event.commit_id, event.commit_url, event.created_at]);
+INSERT INTO public.github_issue_events (repo_id, id, issue_number, url, actor_login, actor_id, actor_avatar_url, actor_url, event, commit_id, commit_url, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    `, [repoID, event.id, event.issue?.number, event.url, event.actor?.login, event.actor?.id, event.actor?.avatar_url, event.actor?.url, event.event, event.commit_id, event.commit_url, event.created_at]);
 }
 await tx.commit();
 

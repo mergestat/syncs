@@ -69,9 +69,9 @@ await tx.queryArray(schemaSQL);
 await tx.queryArray(`DELETE FROM public.github_issue_comments WHERE repo_id = $1;`, [repoID]);
 for await (const comment of commentsBuffer) {
     await tx.queryArray(`
-INSERT INTO public.github_issue_comments (repo_id, id, node_id, issue_number, url, user_login, user_id, user_type, user_avatar_url, user_url, created_at, updated_at, author_association, body, reactions)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-    `, [repoID, comment.id, comment.node_id, comment.issue_url.split("/").pop(), comment.url, comment.user?.login, comment.user?.id, comment.user?.type, comment.user?.avatar_url, comment.user?.url, comment.created_at, comment.updated_at, comment.author_association, comment.body, JSON.stringify(comment.reactions)]);
+INSERT INTO public.github_issue_comments (repo_id, id, issue_number, url, user_login, user_id, user_type, user_avatar_url, user_url, created_at, updated_at, author_association, body, reactions)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    `, [repoID, comment.id, comment.issue_url.split("/").pop(), comment.url, comment.user?.login, comment.user?.id, comment.user?.type, comment.user?.avatar_url, comment.user?.url, comment.created_at, comment.updated_at, comment.author_association, comment.body, JSON.stringify(comment.reactions)]);
 }
 await tx.commit();
 

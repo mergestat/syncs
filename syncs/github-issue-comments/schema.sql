@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS github_issue_comments (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
     id bigint,
-    node_id text,
     issue_number integer,
     url text,
     user_login text,
@@ -23,7 +22,6 @@ CREATE TABLE IF NOT EXISTS github_issue_comments (
 COMMENT ON TABLE github_issue_comments IS 'issue comments of a GitHub repo';
 COMMENT ON COLUMN github_issue_comments.repo_id IS 'foreign key for public.repos.id';
 COMMENT ON COLUMN github_issue_comments.id IS 'id of the issue comment';
-COMMENT ON COLUMN github_issue_comments.node_id IS 'node id of the issue comment';
 COMMENT ON COLUMN github_issue_comments.issue_number IS 'issue number';
 COMMENT ON COLUMN github_issue_comments.url IS 'URL to the issue comment';
 COMMENT ON COLUMN github_issue_comments.user_login IS 'login of the user who created the issue comment';
