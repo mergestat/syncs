@@ -12,7 +12,7 @@ import { Octokit } from "https://cdn.skypack.dev/@octokit/core?dts";
 import { paginateRest } from "https://cdn.skypack.dev/@octokit/plugin-paginate-rest";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
-const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}")
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}");
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
