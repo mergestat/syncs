@@ -13,6 +13,7 @@ import { paginateGraphql } from "https://cdn.jsdelivr.net/npm/@octokit/plugin-pa
 import { throttling } from "https://esm.sh/@octokit/plugin-throttling";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}")
 const query = await Deno.readTextFile("./query.gql");
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
@@ -44,9 +45,10 @@ const octokit = new OctokitWithGrapQLPagination({
 });
 
 const buffer = [];
+const perPage = params.perPage || 100
 
 const iterator = octokit.graphql.paginate.iterator(query, {
-    owner, repo, perPage: 30
+    owner, repo, perPage
 });
   
 for await (const response of iterator) {

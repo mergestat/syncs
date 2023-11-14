@@ -46,7 +46,7 @@ const octokit = new OctokitWithGrapQLPagination({
 const issuesBuffer = [];
 
 const iterator = octokit.graphql.paginate.iterator(query, {
-    owner, repo, perPage: 30
+    owner, repo, perPage: 100
 });
   
 for await (const response of iterator) {

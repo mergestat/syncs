@@ -12,6 +12,7 @@ import { Octokit } from "https://cdn.skypack.dev/@octokit/core?dts";
 import { paginateRest } from "https://cdn.skypack.dev/@octokit/plugin-paginate-rest";
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+const params = JSON.parse(Deno.env.get("MERGESTAT_PARAMS") || "{}")
 const repoID = Deno.env.get("MERGESTAT_REPO_ID")
 const repoURL = new URL(Deno.env.get("MERGESTAT_REPO_URL") || "");
 const owner = repoURL.pathname.split("/")[1];
@@ -20,10 +21,12 @@ const repo = repoURL.pathname.split("/")[2];
 const OctokitWithPagination = Octokit.plugin(paginateRest)
 const octokit = new OctokitWithPagination({ auth: Deno.env.get("MERGESTAT_AUTH_TOKEN") });
 const releasesBuffer = [];
+const perPage = params.perPage || 100;
 
 const iterator = await octokit.paginate.iterator("GET /repos/{owner}/{repo}/releases", {
     owner,
-    repo
+    repo,
+    per_page: perPage,
 })
 
 for await (const { data: releases} of iterator) {
