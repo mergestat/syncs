@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS github_issue_events (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
     id bigint,
-    node_id text,
     issue_number integer,
     url text,
     actor_login text,
@@ -21,7 +20,6 @@ CREATE TABLE IF NOT EXISTS github_issue_events (
 COMMENT ON TABLE github_issue_events IS 'issue events of a GitHub repo';
 COMMENT ON COLUMN github_issue_events.repo_id IS 'foreign key for public.repos.id';
 COMMENT ON COLUMN github_issue_events.id IS 'id of the issue event';
-COMMENT ON COLUMN github_issue_events.node_id IS 'node id of the issue event';
 COMMENT ON COLUMN github_issue_events.issue_number IS 'issue number';
 COMMENT ON COLUMN github_issue_events.url IS 'URL to the issue event';
 COMMENT ON COLUMN github_issue_events.actor_login IS 'login of the issue event actor';

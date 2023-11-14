@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS public.github_releases (
     author_login text,
     author_url text,
     author_avatar_url text,
-    node_id text,
     tag_name text,
     target_commitish text,
     name text,
@@ -37,7 +36,6 @@ COMMENT ON COLUMN github_releases.database_id IS 'GitHub database_id of the rele
 COMMENT ON COLUMN github_releases.author_login IS 'login of the author of the release';
 COMMENT ON COLUMN github_releases.author_url IS 'URL to the profile of the author of the release';
 COMMENT ON COLUMN github_releases.author_avatar_url IS 'URL to the avatar of the author of the release';
-COMMENT ON COLUMN github_releases.node_id IS 'GitHub node id of the release';
 COMMENT ON COLUMN github_releases.tag_name IS 'tag name of the release';
 COMMENT ON COLUMN github_releases.target_commitish IS 'specifies the commitish value that determines where the release is created from';
 COMMENT ON COLUMN github_releases.name IS 'name of the release';
