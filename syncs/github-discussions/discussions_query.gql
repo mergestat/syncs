@@ -11,7 +11,7 @@ query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
         author { login }
         authorAssociation
         bodyText
-        category { name }
+        category { createdAt description emoji id isAnswerable name slug updatedAt }
         comments { totalCount }
         createdAt
         createdViaEmail
