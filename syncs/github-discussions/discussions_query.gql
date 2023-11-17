@@ -1,0 +1,35 @@
+query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
+  repository(owner: $owner, name: $repo) {
+    discussions(first: $perPage, after: $cursor) {
+      nodes {
+        id
+        activeLockReason
+        isAnswered
+        answer { id }
+        answerChosenAt
+        answerChosenBy { login }
+        author { login }
+        authorAssociation
+        bodyText
+        category { name }
+        comments { totalCount }
+        createdAt
+        createdViaEmail
+        databaseId
+        editor { login }
+        lastEditedAt
+        locked
+        number
+        publishedAt
+        reactions { totalCount }
+        title
+        updatedAt
+        url
+      }
+	    pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
