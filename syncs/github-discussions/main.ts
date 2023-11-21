@@ -71,6 +71,15 @@ for (const discussion of discussionsBuffer) {
   
   for (const comment of discussion.comments.nodes) {
     discussionComments.push({ discussionID: discussion.id, ...comment });
+
+    // this is a bit odd, but basically we need to "flatten" replies to comments
+    // so that they can be individual rows in the github_discussion_comments table
+    for (const commentReply of comment.replies.nodes) {
+      discussionComments.push({
+        discussionID: discussion.id,
+        ...commentReply
+      });
+    }
   }
 }
 
