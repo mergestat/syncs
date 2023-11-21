@@ -42,7 +42,6 @@ query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
                 url
               }
             }
-            replyTo { id }
             updatedAt
             upvoteCount
             url
@@ -61,7 +60,7 @@ query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
         updatedAt
         url
       }
-	    pageInfo {
+      pageInfo {
         hasNextPage
         endCursor
       }

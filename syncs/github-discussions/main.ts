@@ -67,7 +67,9 @@ const discussionComments = [];
 // now iterate over every discussion object to pull out entries for
 // github_discussion_categories and github_discussion_comments
 for (const discussion of discussionsBuffer) {
-  discussionCategories[discussion.category?.id] = discussion.category;
+  if (discussion.category) {
+    discussionCategories[discussion.category.id] = discussion.category;
+  }
   
   for (const comment of discussion.comments.nodes) {
     discussionComments.push({ discussionID: discussion.id, ...comment });
@@ -94,9 +96,9 @@ await tx.queryArray(schemaSQL);
 await tx.queryArray(`DELETE FROM public.github_discussions WHERE repo_id = $1;`, [repoID]);
 for await (const discussion of discussionsBuffer) {
     await tx.queryArray(`
-INSERT INTO public.github_discussions (repo_id, id, active_lock_reason, is_answered, answer_id, answer_chosen_at, answer_chosen_by, author_login, author_association, body, category, comment_count, created_at, created_via_email, database_id, editor_login, last_edited_at, locked, number, published_at, reaction_count, title, updated_at, url)
+INSERT INTO public.github_discussions (repo_id, id, active_lock_reason, is_answered, answer_id, answer_chosen_at, answer_chosen_by, author_login, author_association, body, category_id, comment_count, created_at, created_via_email, database_id, editor_login, last_edited_at, locked, number, published_at, reaction_count, title, updated_at, url)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
-    `, [repoID, discussion.id, discussion.activeLockReason, discussion.isAnswered, discussion.answer?.id, discussion.answerChosenAt, discussion.answerChosenBy?.login, discussion.author?.login, discussion.authorAssociation, discussion.body, discussion.category?.name, discussion.comments?.totalCount, discussion.createdAt, discussion.createdViaEmail, discussion.databaseId, discussion.editor?.login, discussion.lastEditedAt, discussion.locked, discussion.number, discussion.publishedAt, discussion.reactions?.totalCount, discussion.title, discussion.updatedAt, discussion.url]);
+    `, [repoID, discussion.id, discussion.activeLockReason, discussion.isAnswered, discussion.answer?.id, discussion.answerChosenAt, discussion.answerChosenBy?.login, discussion.author?.login, discussion.authorAssociation, discussion.body, discussion.category?.id, discussion.comments?.totalCount, discussion.createdAt, discussion.createdViaEmail, discussion.databaseId, discussion.editor?.login, discussion.lastEditedAt, discussion.locked, discussion.number, discussion.publishedAt, discussion.reactions?.totalCount, discussion.title, discussion.updatedAt, discussion.url]);
 }
 
 await tx.queryArray(`DELETE FROM public.github_discussion_categories WHERE repo_id = $1;`, [repoID]);

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS github_discussions (
     author_login text,
     author_association text,
     body text,
-    category text,
+    category_id text,
     comment_count int,
     created_at timestamp with time zone,
     created_via_email boolean,
