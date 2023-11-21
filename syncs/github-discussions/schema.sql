@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS github_discussion_categories (
     CONSTRAINT github_discussion_categories_pkey PRIMARY KEY (repo_id, id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_github_discussion_categories_repo_id_fkey ON github_discussions(repo_id uuid_ops);
+CREATE INDEX IF NOT EXISTS idx_github_discussion_categories_repo_id_fkey ON github_discussion_categories(repo_id uuid_ops);
 
 CREATE TABLE IF NOT EXISTS github_discussion_comments (
     repo_id uuid REFERENCES repos(id) ON DELETE CASCADE ON UPDATE RESTRICT,
@@ -71,3 +71,5 @@ CREATE TABLE IF NOT EXISTS github_discussion_comments (
     _mergestat_synced_at timestamp with time zone NOT NULL DEFAULT now(),
     CONSTRAINT github_discussion_commentss_pkey PRIMARY KEY (repo_id, id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_github_discussion_comments_repo_id_fkey ON github_discussion_comments(repo_id uuid_ops);
