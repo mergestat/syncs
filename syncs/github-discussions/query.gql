@@ -12,7 +12,7 @@ query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
         authorAssociation
         body
         category { createdAt description emoji id isAnswerable name slug updatedAt }
-        comments(first: 100) {
+        comments(first: 50) {
           totalCount
           nodes {
             id
@@ -24,6 +24,24 @@ query($owner: String!, $repo: String!, $perPage: Int! $cursor: String) {
             isMinimized
             minimizedReason
             reactions { totalCount }
+            replies(first: 90) {
+              totalCount
+              nodes {
+                id
+                author { login }
+                authorAssociation
+                body
+                createdAt
+                deletedAt
+                isMinimized
+                minimizedReason
+                reactions { totalCount }
+                replyTo { id }
+                updatedAt
+                upvoteCount
+                url
+              }
+            }
             replyTo { id }
             updatedAt
             upvoteCount
