@@ -45,10 +45,12 @@ const octokit = new OctokitWithGrapQLPagination({
 });
 
 const discussionsBuffer = [];
-const perPage = params.perPage || 100;
+const discussionsPerPage = params.perPage || 100;
+const commentsPerPage = params.commentsPerPage || 50;
+const repliesPerPage = params.repliesPerPage || 90;
 
 const iterator = octokit.graphql.paginate.iterator(discussionsQuery, {
-    owner, repo, perPage
+    owner, repo, discussionsPerPage, commentsPerPage, repliesPerPage
 });
   
 for await (const response of iterator) {
@@ -71,11 +73,17 @@ for (const discussion of discussionsBuffer) {
     discussionCategories[discussion.category.id] = discussion.category;
   }
   
+  if (discussion.comments.totalCount > commentsPerPage) {
+    console.warn(`Discussion ${discussion.id} has ${discussion.comments.totalCount} comments, but we only fetched the first page of ${commentsPerPage} comments!`);
+  }
   for (const comment of discussion.comments.nodes) {
     discussionComments.push({ discussionID: discussion.id, ...comment });
 
     // this is a bit odd, but basically we need to "flatten" replies to comments
     // so that they can be individual rows in the github_discussion_comments table
+   if (comment.replies.totalCount > repliesPerPage) {
+      console.warn(`Discussion comment ${comment.id} has ${comment.replies.totalCount} replies, but we only fetched the first page of ${repliesPerPage} replies!`);
+    }
     for (const commentReply of comment.replies.nodes) {
       discussionComments.push({
         discussionID: discussion.id,
