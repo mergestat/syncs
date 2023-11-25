@@ -1,0 +1,69 @@
+query($owner: String!, $repo: String!, $discussionsPerPage: Int!, $commentsPerPage: Int!, $repliesPerPage: Int!, $cursor: String) {
+  repository(owner: $owner, name: $repo) {
+    discussions(first: $discussionsPerPage, after: $cursor) {
+      nodes {
+        id
+        activeLockReason
+        isAnswered
+        answer { id }
+        answerChosenAt
+        answerChosenBy { login }
+        author { login }
+        authorAssociation
+        body
+        category { createdAt description emoji id isAnswerable name slug updatedAt }
+        comments(first: $commentsPerPage) {
+          totalCount
+          nodes {
+            id
+            author { login }
+            authorAssociation
+            body
+            createdAt
+            deletedAt
+            isMinimized
+            minimizedReason
+            reactions { totalCount }
+            replies(first: $repliesPerPage) {
+              totalCount
+              nodes {
+                id
+                author { login }
+                authorAssociation
+                body
+                createdAt
+                deletedAt
+                isMinimized
+                minimizedReason
+                reactions { totalCount }
+                replyTo { id }
+                updatedAt
+                upvoteCount
+                url
+              }
+            }
+            updatedAt
+            upvoteCount
+            url
+          }
+        }
+        createdAt
+        createdViaEmail
+        databaseId
+        editor { login }
+        lastEditedAt
+        locked
+        number
+        publishedAt
+        reactions { totalCount }
+        title
+        updatedAt
+        url
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
