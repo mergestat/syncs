@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS github_issues (
     comment_count integer,
     created_at timestamp with time zone,
     created_via_email boolean,
-    database_id integer,
+    database_id bigint,
     editor_login text,
     includes_created_edit boolean,
     label_count integer,
