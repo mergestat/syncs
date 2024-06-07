@@ -52,6 +52,6 @@ COMMENT ON COLUMN github_issues.url IS 'GitHub URL of the issue';
 COMMENT ON COLUMN github_issues.labels IS 'labels associated to the issue';
 COMMENT ON COLUMN github_issues._mergestat_synced_at IS 'timestamp when record was synced into the MergeStat database';
 
-CREATE UNIQUE INDEX IF NOT EXISTS github_issues_pkey ON github_issues(repo_id uuid_ops,database_id int4_ops);
-CREATE INDEX IF NOT EXISTS idx_github_issues_created_at_closed_at_database_id ON github_issues(created_at timestamptz_ops DESC,closed_at timestamptz_ops DESC,database_id int4_ops);
+CREATE UNIQUE INDEX IF NOT EXISTS github_issues_pkey ON github_issues(repo_id uuid_ops,database_id int8_ops);
+CREATE INDEX IF NOT EXISTS idx_github_issues_created_at_closed_at_database_id ON github_issues(created_at timestamptz_ops DESC,closed_at timestamptz_ops DESC,database_id int8_ops);
 CREATE INDEX IF NOT EXISTS idx_github_issues_repo_id_fkey ON github_issues(repo_id uuid_ops);
