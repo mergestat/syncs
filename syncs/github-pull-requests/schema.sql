@@ -89,5 +89,5 @@ COMMENT ON COLUMN github_pull_requests.url IS 'GitHub URL of the pull request';
 COMMENT ON COLUMN github_pull_requests.labels IS 'labels associated to the pull request';
 COMMENT ON COLUMN github_pull_requests._mergestat_synced_at IS 'timestamp when record was synced into the MergeStat database';
 
-CREATE UNIQUE INDEX IF NOT EXISTS github_pull_requests_pkey ON github_pull_requests(repo_id uuid_ops,database_id int8_ops);
+CREATE UNIQUE INDEX IF NOT EXISTS github_pull_requests_pkey ON github_pull_requests(repo_id uuid_ops,database_id);
 CREATE INDEX IF NOT EXISTS idx_github_pull_requests_repo_id_fkey ON github_pull_requests(repo_id uuid_ops);
