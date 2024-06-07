@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.github_releases (
     assets_url text,
     upload_url text,
     html_url text,
-    database_id integer,
+    database_id bigint,
     author_login text,
     author_url text,
     author_avatar_url text,
