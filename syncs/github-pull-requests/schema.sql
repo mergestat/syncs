@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS public.github_pull_requests (
     commit_count integer,
     created_at timestamp with time zone,
     created_via_email boolean,
-    database_id integer,
+    database_id bigint,
     deletions integer,
     editor_login text,
     head_ref_name text,
